@@ -83,15 +83,36 @@ void MetalRenderer::create_cube_mesh() {
 
   id<MTLDevice> device = (__bridge id<MTLDevice>)_device;
 
+  // Triangle
+  //   std::vector<Vertex> vertices = {
+  //       {{0.0f, 0.5f, -3.0f}, {1, 0, 0}, {0.5f, 1.0f}},   // Top
+  //       {{-0.5f, -0.5f, -3.0f}, {0, 1, 0}, {0.0f, 0.0f}}, // Left
+  //       {{0.5f, -0.5f, -3.0f}, {0, 0, 1}, {1.0f, 0.0f}},  // Right
+  //   };
+
+  //   std::vector<uint16_t> indices = {0, 1, 2};
+
   std::vector<Vertex> vertices = {
-      {{0.0f, 0.5f, -3.0f}, {1, 0, 0}, {0.5f, 1.0f}},   // Top
-      {{-0.5f, -0.5f, -3.0f}, {0, 1, 0}, {0.0f, 0.0f}}, // Left
-      {{0.5f, -0.5f, -3.0f}, {0, 0, 1}, {1.0f, 0.0f}},  // Right
+      // Front face
+      {{-0.5f, -0.5f, 0.5f}, {1, 0, 0}, {0, 0}},
+      {{0.5f, -0.5f, 0.5f}, {0, 1, 0}, {1, 0}},
+      {{0.5f, 0.5f, 0.5f}, {0, 0, 1}, {1, 1}},
+      {{-0.5f, 0.5f, 0.5f}, {1, 1, 0}, {0, 1}},
+      // Back face
+      {{-0.5f, -0.5f, -0.5f}, {1, 0, 1}, {0, 0}},
+      {{0.5f, -0.5f, -0.5f}, {0, 1, 1}, {1, 0}},
+      {{0.5f, 0.5f, -0.5f}, {1, 1, 1}, {1, 1}},
+      {{-0.5f, 0.5f, -0.5f}, {0, 0, 0}, {0, 1}},
   };
 
-  std::vector<uint16_t> indices = {0, 1, 2};
-
-
+  std::vector<uint16_t> indices = {
+      0, 1, 2, 2, 3, 0, // front
+      1, 5, 6, 6, 2, 1, // right
+      5, 4, 7, 7, 6, 5, // back
+      4, 0, 3, 3, 7, 4, // left
+      3, 2, 6, 6, 7, 3, // top
+      4, 5, 1, 1, 0, 4  // bottom
+  };
 
   _num_indices = static_cast<int>(indices.size());
 
@@ -168,6 +189,14 @@ void MetalRenderer::setup_default_shaders() {
 
   pDesc.vertexDescriptor = vertexDescriptor;
 
+  MTLDepthStencilDescriptor *depthStencilDesc =
+      [[MTLDepthStencilDescriptor alloc] init];
+  depthStencilDesc.depthCompareFunction = MTLCompareFunctionLess;
+  depthStencilDesc.depthWriteEnabled = YES;
+
+  id<MTLDepthStencilState> depthStencilState =
+      [device newDepthStencilStateWithDescriptor:depthStencilDesc];
+
   id<MTLRenderPipelineState> pipelineState =
       [device newRenderPipelineStateWithDescriptor:pDesc error:&error];
 
@@ -230,7 +259,6 @@ void MetalRenderer::clear(const glm::vec4 &color) {
   }
 }
 
-
 void MetalRenderer::flush(const glm::mat4 &view, const glm::mat4 &projection) {
   @autoreleasepool {
     if (!_current_drawable || !_current_command_buffer || !_current_pass)
@@ -240,7 +268,6 @@ void MetalRenderer::flush(const glm::mat4 &view, const glm::mat4 &projection) {
         __bridge id<MTLCommandBuffer>)_current_command_buffer
         renderCommandEncoderWithDescriptor:(__bridge MTLRenderPassDescriptor *)
                                                _current_pass];
-
 
     [enc setRenderPipelineState:(__bridge id<MTLRenderPipelineState>)_pipeline];
 
