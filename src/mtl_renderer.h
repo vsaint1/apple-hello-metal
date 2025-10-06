@@ -49,6 +49,9 @@ private:
   void *_metal_layer = nullptr;   // CAMetalLayer*
   void *_sampler = nullptr;
 
+  void *_depth_stencil_state = nullptr; // id<MTLDepthStencilState>
+  void *_depth_texture = nullptr;       // id<MTLTexture>
+
   // VERTEX DATA
   void *_vertex_buffer = nullptr; // id<MTLBuffer>
   void *_index_buffer = nullptr;  // id<MTLBuffer>
