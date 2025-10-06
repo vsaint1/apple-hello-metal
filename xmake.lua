@@ -9,6 +9,7 @@ add_rules("mode.debug", "mode.release")
 
 add_requires("libsdl3 3.2.22", {configs = {shared = true}})
 add_requires("glm 1.0.1", {configs = {shared = false}})
+add_requires("glad v0.1.36",{configs = {shared = false}})
 
 target("vri_renderer")
     add_includedirs("src",{public = true})
@@ -33,7 +34,7 @@ target("vri_renderer")
         add_files("templates/macos/*.storyboard", "templates/macos/*.xcassets","templates/macos/Info.plist")
     end
 
-    add_packages("libsdl3","glm")
+    add_packages("libsdl3","glm","glad")
 
 
     on_load(function (target)

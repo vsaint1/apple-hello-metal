@@ -1,5 +1,5 @@
 #include "ogl_renderer.h"
-
+#include <glad/glad.h>
 
 bool OpenglRenderer::initialize(SDL_Window* window) {
 
