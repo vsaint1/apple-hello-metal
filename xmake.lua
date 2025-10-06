@@ -7,6 +7,7 @@ add_rules("plugin.compile_commands.autoupdate", {outputdir = ".vscode"})
 add_rules("mode.debug", "mode.release")
 
 add_requires("libsdl3 3.2.22", {configs = {shared = true}})
+add_requires("glm 1.0.1", {configs = {shared = false}})
 
 target("hello_metal")
     add_rules("xcode.application")
@@ -22,7 +23,7 @@ target("hello_metal")
         add_ldflags("-fobjc-arc")
     end
 
-    add_packages("libsdl3")
+    add_packages("libsdl3","glm")
 
 
     on_load(function (target)
