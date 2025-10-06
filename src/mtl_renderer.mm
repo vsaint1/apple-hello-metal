@@ -24,6 +24,7 @@ bool MetalRenderer::initialize(SDL_Window* window){
 
 
 
+
     if(!device){
         SDL_Log("Failed to create device, Metal not supported");
         return false;

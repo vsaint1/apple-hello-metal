@@ -9,3 +9,5 @@ build/
 .vscode/
 
 *.xcodeproj
+
+.cache/
