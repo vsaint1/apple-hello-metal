@@ -18,3 +18,4 @@ target("hello_metal")
     end
 
     add_packages("libsdl3")
+
