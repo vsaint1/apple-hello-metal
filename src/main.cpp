@@ -1,4 +1,5 @@
 #include "mtl_renderer.h"
+#include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
 int main(int argc, const char* argv[]) {
@@ -17,6 +18,7 @@ int main(int argc, const char* argv[]) {
         return -1;
     }
 
+
     MetalRenderer* renderer = new MetalRenderer();
 
 
@@ -31,6 +33,7 @@ int main(int argc, const char* argv[]) {
             if (event.type == SDL_EVENT_QUIT) {
                 is_running = false;
             }
+
         }
     }
 
