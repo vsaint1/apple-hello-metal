@@ -41,7 +41,7 @@ bool MetalRenderer::initialize(SDL_Window *window) {
   depthDesc.width = size.x;
   depthDesc.height = size.y;
   depthDesc.usage = MTLTextureUsageRenderTarget;
-  depthDesc.storageMode = MTLStorageModePrivate;
+  depthDesc.storageMode = MTLStorageModeMemoryless;
   _depth_texture =
       (__bridge_retained void *)[device newTextureWithDescriptor:depthDesc];
 
