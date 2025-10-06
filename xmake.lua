@@ -11,14 +11,14 @@ add_requires("libsdl3 3.2.22", {configs = {shared = true}})
 target("hello_metal")
     add_rules("xcode.application")
     add_includedirs("src",{public = true})
-    add_files("src/main.cpp","src/*.mm", "src/**.storyboard", "src/*.xcassets","res/shaders/metal/**.metal")
-    add_files("src/Info.plist")
+    add_files("src/main.cpp","src/*.mm","res/shaders/metal/**.metal")
 
     add_frameworks("MetalKit")
     add_mflags("-fmodules")
 
     if is_plat("macosx") then
         add_frameworks("Metal", "Cocoa", "QuartzCore", "Foundation", "AppKit")
+        add_files("templates/macos//**.storyboard", "templates/macos//*.xcassets","templates/macos/Info.plist")
         add_ldflags("-fobjc-arc")
     end
 
