@@ -19,3 +19,16 @@ target("hello_metal")
 
     add_packages("libsdl3")
 
+
+    on_load(function (target)
+        for _, pkg in pairs(target:pkgs() or {}) do
+            local name = pkg:name()
+            local installdir = pkg:installdir() or ""
+            if installdir ~= "" then
+                print("Adding rpathdir: ", path.join(installdir, "lib"))
+                target:add("rpathdirs", path.join(installdir, "lib"))
+            else
+                print("No installdir for package: ", name)
+            end
+        end
+    end)
