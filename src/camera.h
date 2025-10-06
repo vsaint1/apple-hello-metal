@@ -28,6 +28,10 @@ struct Camera {
                        glm::vec3(0.0f, 1.0f, 0.0f));
   }
 
+  glm::mat4 get_projection_matrix(float aspect_ratio) const {
+    return glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
+  }
+
   void handle_mouse(int xrel, int yrel) {
     yaw += xrel * sensitivity;
     pitch -= yrel * sensitivity;

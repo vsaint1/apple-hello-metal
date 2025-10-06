@@ -1,4 +1,4 @@
-# Opengl/Metal Renderer [![C++ 20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://isocpp.org/std/the-standard) ![License](https://img.shields.io/github/license/vsaint1/ember_engine.svg)
+# VRI - Renderer Interface [![C++ 20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://isocpp.org/std/the-standard) ![License](https://img.shields.io/github/license/vsaint1/ember_engine.svg)
 
 
 An `SDL3` example with basic rendering capabilities using `Metal` on `macOS` and `iOS` and `OpenGL` on `Other Platforms`.

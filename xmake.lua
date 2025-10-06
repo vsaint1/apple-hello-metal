@@ -1,5 +1,6 @@
-set_project("hello_metal")
-set_languages("cxx17")  -- add objc++ here
+set_project("vri_renderer")
+set_description("A cross platform renderer interface using OpenGL and Metal (example)")
+set_languages("cxx17")
 
 add_rules("mode.debug", "mode.release")
 
@@ -9,18 +10,27 @@ add_rules("mode.debug", "mode.release")
 add_requires("libsdl3 3.2.22", {configs = {shared = true}})
 add_requires("glm 1.0.1", {configs = {shared = false}})
 
-target("hello_metal")
-    add_rules("xcode.application")
+target("vri_renderer")
     add_includedirs("src",{public = true})
-    add_files("src/main.cpp","src/*.mm","res/shaders/metal/**.metal")
+    add_files("src/main.cpp","src/*.cpp")
 
-    add_frameworks("MetalKit")
-    add_mflags("-fmodules")
+    add_defines("SDL_MAIN_HANDLED")
+
+    if is_plat("windows") then 
+        set_kind("binary")
+    end 
+
+    if is_plat("macosx") or is_plat("iphoneos") then
+        add_files("src/*.mm","res/shaders/metal/**.metal")
+        add_ldflags("-fobjc-arc")
+        add_frameworks("MetalKit")
+        add_mflags("-fmodules")
+
+    end
 
     if is_plat("macosx") then
         add_frameworks("Metal", "Cocoa", "QuartzCore", "Foundation", "AppKit")
-        add_files("templates/macos//**.storyboard", "templates/macos//*.xcassets","templates/macos/Info.plist")
-        add_ldflags("-fobjc-arc")
+        add_files("templates/macos/*.storyboard", "templates/macos/*.xcassets","templates/macos/Info.plist")
     end
 
     add_packages("libsdl3","glm")
@@ -35,15 +45,6 @@ target("hello_metal")
                 target:add("rpathdirs", path.join(installdir, "lib"))
             else
                 print("No installdir for package: ", name)
-            end
-        end
-    end)
-
-    after_load(function(target)
-        for _, pkg in ipairs(target:pkgs() or {}) do
-            local incdirs = pkg:get("includedirs") or {}
-            for _, d in ipairs(incdirs) do
-                target:add("xcode.public_headers", d)
             end
         end
     end)
