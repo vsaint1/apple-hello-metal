@@ -47,7 +47,8 @@ bool MetalRenderer::initialize(SDL_Window *window) {
     return false;
   }
 
-  // raw_layer is a pointer to a CAMetalLayer (unretained by SDL), keep a retained reference
+  // raw_layer is a pointer to a CAMetalLayer (unretained by SDL), keep a
+  // retained reference
   CAMetalLayer *layer = (__bridge CAMetalLayer *)raw_layer;
 
   layer.device = device;
@@ -71,9 +72,43 @@ bool MetalRenderer::initialize(SDL_Window *window) {
 
   _command_queue = (__bridge_retained void *)commandQueue;
 
+  create_cube_mesh();
+
   SDL_Log("Metal Renderer initialized successfully.");
 
   return true;
+}
+
+void MetalRenderer::create_cube_mesh() {
+
+  id<MTLDevice> device = (__bridge id<MTLDevice>)_device;
+
+  std::vector<Vertex> vertices = {
+      {{0.0f, 0.5f, -3.0f}, {1, 0, 0}, {0.5f, 1.0f}},   // Top
+      {{-0.5f, -0.5f, -3.0f}, {0, 1, 0}, {0.0f, 0.0f}}, // Left
+      {{0.5f, -0.5f, -3.0f}, {0, 0, 1}, {1.0f, 0.0f}},  // Right
+  };
+
+  std::vector<uint16_t> indices = {0, 1, 2};
+
+
+
+  _num_indices = static_cast<int>(indices.size());
+
+  id<MTLBuffer> vbuf =
+      [device newBufferWithBytes:vertices.data()
+                          length:sizeof(Vertex) * vertices.size()
+                         options:MTLResourceStorageModeShared];
+
+  id<MTLBuffer> ibuf =
+      [device newBufferWithBytes:indices.data()
+                          length:sizeof(uint16_t) * indices.size()
+                         options:MTLResourceStorageModeShared];
+
+  _vertex_buffer = (__bridge_retained void *)vbuf;
+  _index_buffer = (__bridge_retained void *)ibuf;
+
+  SDL_Log("Mesh created with %d indices", _num_indices);
 }
 
 void MetalRenderer::setup_default_shaders() {
@@ -91,15 +126,18 @@ void MetalRenderer::setup_default_shaders() {
     return;
   }
 
-  id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"vertex_main"];
-  id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"fragment_main"];
+  id<MTLFunction> vertexFunction =
+      [defaultLibrary newFunctionWithName:@"vertex_main"];
+  id<MTLFunction> fragmentFunction =
+      [defaultLibrary newFunctionWithName:@"fragment_main"];
 
   if (!vertexFunction || !fragmentFunction) {
     SDL_Log("Failed to find the vertex or fragment function.");
     return;
   }
 
-  MTLRenderPipelineDescriptor *pDesc = [[MTLRenderPipelineDescriptor alloc] init];
+  MTLRenderPipelineDescriptor *pDesc =
+      [[MTLRenderPipelineDescriptor alloc] init];
   pDesc.label = @"Default Pipeline";
   pDesc.vertexFunction = vertexFunction;
   pDesc.fragmentFunction = fragmentFunction;
@@ -119,7 +157,8 @@ void MetalRenderer::setup_default_shaders() {
 
   // Texcoord attribute
   vertexDescriptor.attributes[2].format = MTLVertexFormatFloat2;
-  vertexDescriptor.attributes[2].offset = sizeof(float) * 6; // [x,y,z,r,g,b...u,v]
+  vertexDescriptor.attributes[2].offset =
+      sizeof(float) * 6; // [x,y,z,r,g,b...u,v]
   vertexDescriptor.attributes[2].bufferIndex = 0;
 
   // Layout
@@ -129,10 +168,12 @@ void MetalRenderer::setup_default_shaders() {
 
   pDesc.vertexDescriptor = vertexDescriptor;
 
-  id<MTLRenderPipelineState> pipelineState = [device newRenderPipelineStateWithDescriptor:pDesc error:&error];
+  id<MTLRenderPipelineState> pipelineState =
+      [device newRenderPipelineStateWithDescriptor:pDesc error:&error];
 
   if (!pipelineState) {
-    SDL_Log("Failed to create pipeline state: %s", error.localizedDescription.UTF8String);
+    SDL_Log("Failed to create pipeline state: %s",
+            error.localizedDescription.UTF8String);
     return;
   }
 
@@ -166,46 +207,90 @@ void MetalRenderer::destroy() {
 }
 
 void MetalRenderer::clear(const glm::vec4 &color) {
+  @autoreleasepool {
+    id<CAMetalDrawable> drawable =
+        [(__bridge CAMetalLayer *)_metal_layer nextDrawable];
+    if (!drawable)
+      return;
 
-    @autoreleasepool {
-        id<MTLDevice> device = (__bridge id<MTLDevice>)_device;
-        id<MTLCommandQueue> queue = (__bridge id<MTLCommandQueue>)_command_queue;
-        CAMetalLayer *layer = (__bridge CAMetalLayer *)_metal_layer;
+    id<MTLCommandQueue> queue = (__bridge id<MTLCommandQueue>)_command_queue;
+    id<MTLCommandBuffer> cmd = [queue commandBuffer];
 
-        if (!device || !queue || !layer) {
-            return;
-        }
+    MTLRenderPassDescriptor *pass =
+        [MTLRenderPassDescriptor renderPassDescriptor];
+    pass.colorAttachments[0].texture = drawable.texture;
+    pass.colorAttachments[0].loadAction = MTLLoadActionClear;
+    pass.colorAttachments[0].storeAction = MTLStoreActionStore;
+    pass.colorAttachments[0].clearColor =
+        MTLClearColorMake(color.r, color.g, color.b, color.a);
 
-        id<CAMetalDrawable> drawable = [layer nextDrawable];
-        if (!drawable) {
-            return;
-        }
-
-        id<MTLCommandBuffer> cmd = [queue commandBuffer];
-        if (!cmd) {
-            SDL_Log("clear: failed to create command buffer");
-            return;
-        }
-
-        MTLRenderPassDescriptor *pass = [MTLRenderPassDescriptor renderPassDescriptor];
-        pass.colorAttachments[0].texture = drawable.texture;
-        pass.colorAttachments[0].loadAction = MTLLoadActionClear;
-        pass.colorAttachments[0].storeAction = MTLStoreActionStore;
-        pass.colorAttachments[0].clearColor = MTLClearColorMake(color.r, color.g, color.b, color.a);
-
-        id<MTLRenderCommandEncoder> encoder = [cmd renderCommandEncoderWithDescriptor:pass];
-        [encoder endEncoding];
-
-        [cmd presentDrawable:drawable];
-        [cmd commit];
-    }
+    _current_drawable = (__bridge_retained void *)drawable;
+    _current_command_buffer = (__bridge_retained void *)cmd;
+    _current_pass = (__bridge_retained void *)pass;
+  }
 }
 
+
 void MetalRenderer::flush(const glm::mat4 &view, const glm::mat4 &projection) {
-    // TODO: implement draw calls using _pipeline, vertex buffers, uniform buffers, etc.
+  @autoreleasepool {
+    if (!_current_drawable || !_current_command_buffer || !_current_pass)
+      return;
+
+    id<MTLRenderCommandEncoder> enc = [(
+        __bridge id<MTLCommandBuffer>)_current_command_buffer
+        renderCommandEncoderWithDescriptor:(__bridge MTLRenderPassDescriptor *)
+                                               _current_pass];
+
+
+    [enc setRenderPipelineState:(__bridge id<MTLRenderPipelineState>)_pipeline];
+
+    const glm::mat4 model_matrix = glm::mat4(1.0f);
+
+    Uniforms u;
+    u.model = model_matrix;
+    u.view = view;
+    u.projection = projection;
+
+    id<MTLDevice> device = (__bridge id<MTLDevice>)_device;
+    id<MTLBuffer> uniformBuf =
+        [device newBufferWithBytes:&u
+                            length:sizeof(u)
+                           options:MTLResourceStorageModeShared];
+    [enc setVertexBuffer:uniformBuf offset:0 atIndex:1];
+
+    [enc setVertexBuffer:(__bridge id<MTLBuffer>)_vertex_buffer
+                  offset:0
+                 atIndex:0];
+    [enc drawIndexedPrimitives:MTLPrimitiveTypeTriangle
+                    indexCount:_num_indices
+                     indexType:MTLIndexTypeUInt16
+                   indexBuffer:(__bridge id<MTLBuffer>)_index_buffer
+             indexBufferOffset:0];
+
+    [enc endEncoding];
+  }
 }
 
 void MetalRenderer::present() {
+  @autoreleasepool {
+    if (!_current_drawable || !_current_command_buffer)
+      return;
+
+    [(__bridge id<MTLCommandBuffer>)_current_command_buffer
+        presentDrawable:(__bridge id<CAMetalDrawable>)_current_drawable];
+
+    [(__bridge id<MTLCommandBuffer>)_current_command_buffer commit];
+
+    CFBridgingRelease(_current_drawable);
+    CFBridgingRelease(_current_command_buffer);
+
+    if (_current_pass)
+      CFBridgingRelease(_current_pass);
+
+    _current_drawable = nullptr;
+    _current_command_buffer = nullptr;
+    _current_pass = nullptr;
+  }
 }
 
 MetalRenderer::~MetalRenderer() { destroy(); }
