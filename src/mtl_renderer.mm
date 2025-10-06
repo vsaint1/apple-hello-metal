@@ -52,6 +52,8 @@ bool MetalRenderer::initialize(SDL_Window *window) {
 
   create_cube_mesh();
 
+  SDL_Log("Created a MetalRenderer | Viewport %d x %d", size.x, size.y);
+
   return true;
 }
 
@@ -105,7 +107,9 @@ void MetalRenderer::create_cube_mesh() {
   id<MTLDevice> device = (__bridge id<MTLDevice>)_device;
   std::srand((unsigned int)time(nullptr));
 
-  constexpr int count = 100'000'0;
+  //   constexpr int count = 100'000'0;
+  constexpr int count = 1000;
+
   std::vector<Vertex> vertices;
   std::vector<uint16_t> indices;
 

@@ -1,9 +1,9 @@
 #include "SDL3/SDL_events.h"
+#include "camera.h"
 #include "mtl_renderer.h"
+#include "renderer.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
-#include "camera.h"
-
 
 int main(int argc, const char *argv[]) {
   int window_width = 1280;
@@ -24,7 +24,8 @@ int main(int argc, const char *argv[]) {
     return -1;
   }
 
-  MetalRenderer *renderer = new MetalRenderer();
+  Renderer *renderer = new MetalRenderer();
+
   if (!renderer->initialize(window)) {
     SDL_Log("Failed to initialize Metal Renderer.");
     delete renderer;

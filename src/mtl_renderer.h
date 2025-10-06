@@ -1,46 +1,27 @@
 #pragma once
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_metal.h>
-#include <glm/glm.hpp>
-#include <vector>
+#include "renderer.h"
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/matrix.hpp>
-
-struct Vertex {
-  glm::vec3 pos;
-  glm::vec3 color;
-  glm::vec2 uv;
-};
-
-struct Uniforms {
-  glm::mat4 model;
-  glm::mat4 view;
-  glm::mat4 projection;
-};
-
-class MetalRenderer {
+class MetalRenderer : public Renderer {
 public:
   MetalRenderer() = default;
   ~MetalRenderer();
 
-  bool initialize(SDL_Window *window);
+  bool initialize(SDL_Window *window) override;
 
-  void clear(const glm::vec4 &color);
+  void clear(const glm::vec4 &color) override;
 
-  void flush(const glm::mat4 &view, const glm::mat4 &projection);
+  void flush(const glm::mat4 &view, const glm::mat4 &projection) override;
 
-  void present();
+  void present() override;
 
-  void destroy();
+  void destroy() override;
 
 protected:
   SDL_Window *_window = nullptr;
 
-  void setup_default_shaders();
+  void setup_default_shaders() override;
 
-  void create_cube_mesh();
+  void create_cube_mesh() override;
 
 private:
   void *_device = nullptr;        // id<MTLDevice>
