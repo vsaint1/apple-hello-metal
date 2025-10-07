@@ -10,3 +10,13 @@
 
 #include "renderer.h"
 #include <string>
+
+#include <filesystem>
+
+#if __APPLE__
+const std::filesystem::path BASE_PATH = SDL_GetBasePath();
+#define ASSETS_PATH (BASE_PATH / "res/").string()
+#else
+const std::filesystem::path BASE_PATH = SDL_GetBasePath();
+#define ASSETS_PATH std::string("res/")
+#endif

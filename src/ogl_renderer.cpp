@@ -1,6 +1,8 @@
 #include "ogl_renderer.h"
 
+#include "core.h"
 #include "utils.h"
+#include <cstdlib>
 #include <ctime>
 
 GLuint compile_shader(const char* source, GLenum type) {
@@ -38,7 +40,7 @@ bool OpenglRenderer::initialize(SDL_Window* window) {
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -170,9 +172,9 @@ void OpenglRenderer::destroy() {
 
 void OpenglRenderer::setup_default_shaders() {
 
-    const std::string vertex_shader_source = load_assets_file("res/shaders/opengl/default.vert");
+    const std::string vertex_shader_source = load_assets_file((ASSETS_PATH + "default.vert").c_str());
 
-    const std::string fragment_shader_source = load_assets_file("res/shaders/opengl/default.frag");
+    const std::string fragment_shader_source = load_assets_file((ASSETS_PATH + "default.frag").c_str());
 
     GLuint vertex_shader   = compile_shader(vertex_shader_source.c_str(), GL_VERTEX_SHADER);
     GLuint fragment_shader = compile_shader(fragment_shader_source.c_str(), GL_FRAGMENT_SHADER);
@@ -200,17 +202,6 @@ void OpenglRenderer::setup_default_shaders() {
     }
 
 
-    glValidateProgram(_default_shader_program);
-    glGetProgramiv(_default_shader_program, GL_VALIDATE_STATUS, &success);
-    if (!success) {
-        char info_log[512];
-        glGetProgramInfoLog(_default_shader_program, 512, nullptr, info_log);
-        SDL_Log("ERROR::SHADER::PROGRAM::VALIDATION_FAILED: %s", info_log);
-        glDeleteProgram(_default_shader_program);
-        _default_shader_program = 0;
-    }
-
-
     glUseProgram(_default_shader_program);
 
     _uniforms.model_loc      = glGetUniformLocation(_default_shader_program, "u.model");
@@ -220,6 +211,12 @@ void OpenglRenderer::setup_default_shaders() {
     if (_uniforms.model_loc == -1 || _uniforms.view_loc == -1 || _uniforms.projection_loc == -1) {
         SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Model %d, View %d or Projection %d uniform not found in shader", _uniforms.model_loc,
                     _uniforms.view_loc, _uniforms.projection_loc);
+    }
+
+    if (!_default_shader_program) {
+        SDL_Log("Failed to create default shader program");
+        exit(-1);
+        return;
     }
 
     glDeleteShader(vertex_shader);
@@ -233,8 +230,8 @@ void OpenglRenderer::create_cube_mesh() {
 
     std::srand((unsigned int) time(nullptr));
 
-    //   constexpr int count = 100'000'00;
-    constexpr int count = 1000;
+       constexpr int count = 100'000'00;
+//    constexpr int count = 1000;
 
     std::vector<Vertex> vertices;
     std::vector<uint16_t> indices;

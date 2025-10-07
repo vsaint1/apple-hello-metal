@@ -17,28 +17,34 @@ target("vri_renderer")
 
     add_defines("SDL_MAIN_HANDLED")
 
-    if is_plat("windows") then 
+    if is_plat("windows") then
         set_kind("binary")
-    end 
+    end
 
     if is_plat("macosx") or is_plat("iphoneos") then
-        add_files("src/*.mm","res/shaders/metal/**.metal")
+        add_rules("xcode.application")
+        add_files("src/*.mm","res/shaders/metal/*.metal")
         add_ldflags("-fobjc-arc")
         add_frameworks("MetalKit")
         add_mflags("-fmodules")
 
     end
 
-    if is_plat("macosx") then
+   if is_plat("macosx") then
         add_frameworks("Metal", "Cocoa", "QuartzCore", "Foundation", "AppKit")
-        add_files("templates/macos/*.storyboard", "templates/macos/*.xcassets","templates/macos/Info.plist")
+
+        add_files("templates/macos/**/*.storyboard", "templates/macos/*.xcassets", "templates/macos/Info.plist")
+        add_installfiles("res/**", {prefixdir = "res"})
     end
+
+    after_build(function (target)
+        if not is_plat("macosx") then
+            os.cp("res", path.join(target:targetdir(), "res"))
+        end
+    end)
 
     add_packages("libsdl3","glm","glad")
 
-    after_build(function (target)
-        os.cp("res", path.join(target:targetdir(), "res"))
-    end)
 
     on_load(function (target)
         for _, pkg in pairs(target:pkgs() or {}) do
