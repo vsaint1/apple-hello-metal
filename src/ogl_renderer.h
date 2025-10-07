@@ -4,7 +4,7 @@
 class OpenglRenderer : public Renderer {
 public:
     OpenglRenderer()           = default;
-    ~OpenglRenderer() override = default;
+    ~OpenglRenderer();
 
     bool initialize(SDL_Window* window) override;
 
