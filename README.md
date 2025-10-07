@@ -6,6 +6,11 @@ Do primeiro "Hello, World!" (mais conhecido como o primeiro triângulo) em [Open
 
 ---
 
+TLDR:
+
+![Design](docs/design.png)
+
+
 ## Computação Gráfica Moderna
 
 Toda renderização segue uma **pipeline gráfica**:
@@ -302,7 +307,7 @@ Renderizando 1.000.000 de cubos com **Batching**, **Depth Stencil**, e **Câmera
 ## Conclusão
 
 
-OpenGL continua sendo um excelente ponto de partida, mas **Metal e Vulkan** representam o paradigma moderno: **controle total, previsibilidade e performance real**.
+OpenGL continua sendo um excelente ponto de partida, mas APIs como **Metal**, **Vulkan** e **DirectX 12** oferecem controle e performance superiores para aplicações modernas, que é algo crucial para jogos ou simulações em tempo real.
 
 > Renderizar triângulos pode parecer algo trivial, mas entender o processo pode ser complexo e recompensador.
 
