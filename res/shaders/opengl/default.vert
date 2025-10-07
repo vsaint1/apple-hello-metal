@@ -12,14 +12,15 @@ struct Uniforms {
 
 uniform Uniforms u;
 
+out vec2 UV;
 out vec3 COLOR;
 
 void main(){
 
     vec4 pos = vec4(a_pos,1.0);
 
-    gl_Position = u.model * u.view * u.projection * pos;
-
-    COLOR = a_color * a_tex_coord.x; // just to compiler not remove it (soon ill add textures)
+    gl_Position = u.projection * u.view * u.model * pos;
+    UV = a_tex_coord;
+    COLOR = a_color;
 
 }

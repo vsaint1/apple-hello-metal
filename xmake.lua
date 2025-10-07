@@ -36,6 +36,9 @@ target("vri_renderer")
 
     add_packages("libsdl3","glm","glad")
 
+    after_build(function (target)
+        os.cp("res", path.join(target:targetdir(), "res"))
+    end)
 
     on_load(function (target)
         for _, pkg in pairs(target:pkgs() or {}) do
