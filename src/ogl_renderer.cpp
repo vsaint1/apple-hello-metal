@@ -40,7 +40,7 @@ bool OpenglRenderer::initialize(SDL_Window* window) {
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -230,8 +230,8 @@ void OpenglRenderer::create_cube_mesh() {
 
     std::srand((unsigned int) time(nullptr));
 
-       constexpr int count = 100'000'00;
-//    constexpr int count = 1000;
+    //    constexpr int count = 100'000'00;
+   constexpr int count = 10000;
 
     std::vector<Vertex> vertices;
     std::vector<uint16_t> indices;

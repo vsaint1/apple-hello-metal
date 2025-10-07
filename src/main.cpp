@@ -89,6 +89,12 @@ int main(int argc, const char *argv[]) {
       camera.move_right(dt);
     }
 
+    if(state[SDL_SCANCODE_E]) {
+      glEnable(GL_DEPTH_TEST);
+    }else{
+      glDisable(GL_DEPTH_TEST);
+    }
+
     renderer->clear(glm::vec4(0.2f, 0.4f, 0.8f, 1.0f));
     renderer->flush(camera.get_view_matrix(), projection_matrix);
     renderer->present();
