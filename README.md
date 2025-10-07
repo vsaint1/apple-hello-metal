@@ -249,7 +249,7 @@ Driver Overhead: Latência e perda de performance causada pela comunicação exc
 
 | Técnica | Descrição |
 |----------|------------|
-| **Frustum Culling** | Evita renderizar objetos fora do campo de visão da câmera, economizando recursos de processamento. [Frustum Culling](https://en.wikipedia.org/wiki/Viewing_frustum) |
+| **[Frustum Culling](https://en.wikipedia.org/wiki/Viewing_frustum)** | Evita renderizar objetos fora do campo de visão da câmera, economizando recursos de processamento.  |
 | **Occlusion Culling** | Evita desenhar objetos ocultos por outros. |
 | **Depth Pre-Pass** | Primeira passagem apenas para profundidade. |
 | **Deferred Shading** | Armazena informações em buffers intermediários (G-buffer). |
