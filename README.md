@@ -145,6 +145,8 @@ id<MTLRenderCommandEncoder> enc = [cmd renderCommandEncoderWithDescriptor:desc];
 **Desvantagens**
 - Verboso e mais complexo.
 - Exclusivo do ecossistema Apple.
+- Pouco conteúdo disponível.
+- Conteúdos e/out Tutoriais implementados em diferentes linguagens (Swift, Objective-C/Objective-C++, C++).
 
 ---
 
