@@ -35,7 +35,7 @@ A pipeline moderna é composta por múltiplas etapas programáveis:
 | **Depth/Stencil Test** | Controla visibilidade e hierarquia de camadas, garantindo que objetos mais próximos da câmera sejam renderizados na frente de objetos mais distantes. |
 
 
-![3D Pipeline](docs/3D-pipeline.png) 
+<img src="docs/3D-Pipeline.png" alt="3D Pipeline" width="600"/>
 
 > Fonte: [Wiki Graphics pipeline](https://en.wikipedia.org/wiki/Graphics_pipeline)
 
@@ -128,7 +128,7 @@ id<MTLRenderCommandEncoder> enc = [cmd renderCommandEncoderWithDescriptor:desc];
 ```
 
 **Vantagens**
-- Controle total sobre o ciclo de renderização.
+- Controle total sobre a pipeline de renderização.
 - Performance previsível e eficiente.
 - Total integração com o hardware Apple Silicon.
 
