@@ -140,7 +140,7 @@ id<MTLRenderCommandEncoder> enc = [cmd renderCommandEncoderWithDescriptor:desc];
 
 ### Complexidade entre diferentes `Backends` 
 
-Embora a computação gráfica pareça inicialmente complexa, ela revela diferentes níveis de controle dependendo da API usada. Por exemplo, **habilitar o depth testing** (teste de profundidade) é algo trivial no OpenGL, mas requer um pouco mais de configuração no Metal.
+Embora a computação gráfica seja bastante complexa, ela revela diferentes níveis de controle dependendo da API usada. Por exemplo, **habilitar o depth testing** (teste de profundidade) é algo trivial no OpenGL, mas requer um pouco mais de configuração no Metal.
 
 > **OpenGL**  
 > Um simples comando habilita o depth testing, e limpar o buffer de profundidade antes de cada frame é igualmente direto:
