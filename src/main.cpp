@@ -83,7 +83,7 @@ int main(int argc, const char* argv[]) {
         renderer->flush(camera.get_view_matrix(), projection_matrix);
         renderer->present();
 
-        // SDL_Delay(16); // ~60 FPS
+        SDL_Delay(16); // ~60 FPS
     }
 
     delete renderer;
