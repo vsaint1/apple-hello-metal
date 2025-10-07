@@ -100,11 +100,16 @@ glBindBuffer(GL_ARRAY_BUFFER, vbuf);
 **Vantagens**
 - Simples e multiplataforma.
 - Ideal para aprendizado e prototipagem rápida.
+- Ampla documentação e disponibilidade de conteúdos.
 
 **Desvantagens**
 - Estados globais implícitos.
 - Dificuldade em paralelizar.
 - Dependência de drivers e implementações de vendors.
+- Última atualização significativa em 2017. (Versão 4.6)
+
+Vendor: Fabricante de hardware (NVIDIA, AMD, Intel).
+Driver: Software que permite o sistema operacional se comunicar com o hardware.
 
 ---
 
