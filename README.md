@@ -347,7 +347,7 @@ OpenGL continua sendo um excelente ponto de partida, mas APIs como **Metal**, **
 ### Código Fonte
 
 - [Repositório no GitHub](https://github.com/vsaint1/ogl-metal-renderer)
-- [Minha Game Engine (C++)](https://github.com/vsaint1/ember_engine)
+- [Minha Game Engine (C++)](https://github.com/vsaint1/ember_engine) - Scriptável em Lua, cross-platform, OpenGL + Metal.
 
 ### OpenGL
 - [OpenGL Documentação (Khronos)](https://www.opengl.org/) – Documentação e notícias oficiais.
@@ -367,12 +367,7 @@ OpenGL continua sendo um excelente ponto de partida, mas APIs como **Metal**, **
 
 ---
 
-## Contato
-
-- [Meu Github](https://github.com/vsaint1)
-- [Meu LinkedIn](https://www.linkedin.com/in/vsaint1/)
-
-
 ## Créditos
 
-- [Lucas Lima](https://www.linkedin.com/in/lucaslimanunes/) – Revisão e sugestões de melhorias.
+- [Vinicius Gabriel (LinkedIn)](https://www.linkedin.com/in/vsaint1/) – Autor e desenvolvedor.
+- [Lucas Lima (LinkedIn)](https://www.linkedin.com/in/lucaslimanunes/) – Revisão e sugestões de melhorias.
